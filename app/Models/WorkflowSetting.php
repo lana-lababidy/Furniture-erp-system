@@ -18,14 +18,19 @@ class WorkflowSetting extends Model
         self::METHODOLOGY_QUALITATIVE,
     ];
 
+    public const REQUIRED_ROLE_FIELD_TEAM = 'field_team';
+    public const REQUIRED_ROLE_QC = 'qc';
+    public const REQUIRED_ROLE_DATA_ENTRY = 'data_entry';
+
     protected $fillable = [
         'methodology',
-        'task_name',
+        'title',
         'allocation',
         'days',
         'note',
         'related',
         'sequence',
+        'required_role',
     ];
 
     protected $casts = [

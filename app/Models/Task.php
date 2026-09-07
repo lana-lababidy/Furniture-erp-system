@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'project_id',
@@ -21,6 +21,7 @@ class Task extends Model
         'related',
         'sequence',
         'status',
+        'required_role',
         'started_at',
         'finished_at',
     ];

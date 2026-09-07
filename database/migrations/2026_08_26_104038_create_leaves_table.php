@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->enum('type', ['paid', 'unpaid']);
+            $table->enum('type', ['sick', 'annual', 'unpaid', 'emergency']);
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');

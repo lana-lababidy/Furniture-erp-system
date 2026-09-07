@@ -12,13 +12,9 @@ class Company extends Model
 
     protected $fillable = [
         'name',
-        'phone',
-        'notes',
+        'address',
     ];
 
-    /**
-     * Company (1) --- (M) Project
-     */
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class);

@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'company_id',
         'contact_id',
+        'assigned_pm_id',
         'name',
         'methodology',
         'status',
@@ -27,6 +29,11 @@ class Project extends Model
     public function contact(): BelongsTo
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function projectManager(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_pm_id');
     }
 
     public function requirements(): HasMany
@@ -43,5 +50,12 @@ class Project extends Model
     {
         return $this->tasks()->count() > 0
             && $this->tasks()->where('status', '!=', 'completed')->doesntExist();
+    }
+
+    public function refreshProjectStatus(): void
+    {
+        if ($this->allTasksCompleted() && $this->status !== 'Completed') {
+            $this->update(['status' => 'Completed']);
+        }
     }
 }
