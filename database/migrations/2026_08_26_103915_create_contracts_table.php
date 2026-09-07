@@ -14,8 +14,9 @@ return new class extends Migration
             $table->decimal('base_salary', 10, 2);
             $table->date('start_date');
             $table->date('end_date')->nullable();
-            $table->string('status')->default('active'); // active, expired, terminated
+            $table->enum('status', ['active', 'expired', 'terminated'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

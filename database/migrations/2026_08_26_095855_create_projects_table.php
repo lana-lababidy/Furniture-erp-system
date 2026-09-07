@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,10 +12,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->foreignId('contact_id')->nullable()->constrained('contacts')->nullOnDelete();
-            $table->string('name'); // اسم البحث أو الاستبيان
-            $table->enum('methodology', ['Quantitative', 'Qualitative']); // كمي أو نوعي
+            $table->foreignId('assigned_pm_id')->nullable()->constrained('users')->nullOnDelete();
+
+            $table->string('name');
+            $table->enum('methodology', ['Quantitative', 'Qualitative', 'Hybrid']);
             $table->enum('status', ['Lead', 'Proposal', 'Contract', 'In Progress', 'Completed'])->default('Lead');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

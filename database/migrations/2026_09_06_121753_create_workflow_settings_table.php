@@ -10,15 +10,14 @@ return new class extends Migration
     {
         Schema::create('workflow_settings', function (Blueprint $table) {
             $table->id();
-
             $table->enum('methodology', ['Quantitative', 'Qualitative']);
-            $table->string('task_name');
+            $table->string('title');
             $table->enum('allocation', ['Office', 'Field', 'Office & Field']);
             $table->string('days')->nullable();
-            $table->string('note')->nullable();
+            $table->text('note')->nullable();
             $table->string('related')->nullable();
             $table->unsignedInteger('sequence');
-
+            $table->enum('required_role', ['field_team', 'qc', 'data_entry'])->nullable();
             $table->timestamps();
         });
     }

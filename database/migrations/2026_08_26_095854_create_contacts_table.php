@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

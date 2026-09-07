@@ -11,14 +11,15 @@ return new class extends Migration
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->enum('type', ['sick', 'annual', 'unpaid']);
+            $table->enum('type', ['paid', 'unpaid']);
             $table->date('start_date');
             $table->date('end_date');
-            $table->string('status')->default('pending'); // pending, approved, rejected
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('reason')->nullable();
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->decimal('remaining_amount', 10, 2); // يتناقص كل مسير رواتب
             $table->string('status')->default('active'); // active, completed, cancelled
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

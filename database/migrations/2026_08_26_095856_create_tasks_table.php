@@ -21,10 +21,11 @@ return new class extends Migration
 
             $table->unsignedInteger('sequence');
             $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
+            $table->enum('required_role', ['field_team', 'qc', 'data_entry'])->nullable();
 
             $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

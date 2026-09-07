@@ -13,11 +13,22 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
             $table->enum('type', [
-                'CAPI', 'CATI', 'CAWI', 'CLT', 'PAPI', 
-                'Mystery shopping', 'RA', 'FG', 'IDI', 'KII', 'Observation', 'Site Visit'
+                'CAPI',
+                'CATI',
+                'CAWI',
+                'CLT',
+                'PAPI',
+                'Mystery shopping',
+                'RA',
+                'FG',
+                'IDI',
+                'KII',
+                'Observation',
+                'Site Visit'
             ]);
             $table->integer('sample_size')->default(0); // حجم العينة المطلوب (مثال: 500 أو 18)
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
