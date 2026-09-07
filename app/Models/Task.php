@@ -5,51 +5,55 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Task extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'order_id',
-        'role_id',
+        'project_id',
+        'title',
+        'allocation',
+        'days',
+        'note',
+        'related',
         'sequence',
         'status',
         'started_at',
         'finished_at',
-        'notes',
     ];
 
     protected function casts(): array
     {
         return [
+            'sequence' => 'integer',
             'started_at' => 'datetime',
             'finished_at' => 'datetime',
         ];
     }
 
-    public function order(): BelongsTo
+    public function project(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Project::class);
     }
 
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    public function materials(): HasMany
-    {
-        return $this->hasMany(OrderMaterial::class);
-    }
-
+    /**
+     * هل هذه المهمة مفتوحة للبدء؟ (كل المهام السابقة بالتسلسل مكتملة)
+     */
     public function isUnlocked(): bool
     {
-        return !$this->order
+        return !$this->project
             ->tasks()
             ->where('sequence', '<', $this->sequence)
             ->where('status', '!=', 'completed')
             ->exists();
+    }
+
+    public function projectRequirements(): BelongsToMany
+    {
+        return $this->belongsToMany(ProjectRequirement::class, 'project_requirement_task')
+            ->withTimestamps();
     }
 }

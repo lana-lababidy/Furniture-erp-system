@@ -6,27 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
-            $table->foreignId('role_id')->constrained('roles');
-            $table->unsignedInteger('sequence')->default(1);
-            $table->string('status')->default('pending'); // pending, in_progress, completed
+            $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
+
+            $table->string('title');
+            $table->enum('allocation', ['Office', 'Field', 'Office & Field']);
+            $table->string('days')->nullable(); // نص وليس رقم دائماً
+
+            $table->text('note')->nullable();
+            $table->string('related')->nullable();
+
+            $table->unsignedInteger('sequence');
+            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
+
             $table->timestamp('started_at')->nullable();
             $table->timestamp('finished_at')->nullable();
-            $table->text('notes')->nullable();
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tasks');

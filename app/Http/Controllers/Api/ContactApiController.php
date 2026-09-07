@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
@@ -40,7 +40,7 @@ class ContactApiController extends Controller
 
     public function show(Contact $contact): JsonResponse
     {
-        $contact->load('orders');
+        $contact->load('projects');
 
         return response()->json($contact);
     }

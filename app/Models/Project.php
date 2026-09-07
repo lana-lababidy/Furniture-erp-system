@@ -7,24 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Order extends Model
+class Project extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'company_id',
         'contact_id',
-        'category_id',
+        'name',
+        'methodology',
         'status',
     ];
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
 
     public function contact(): BelongsTo
     {
         return $this->belongsTo(Contact::class);
     }
 
-    public function category(): BelongsTo
+    public function requirements(): HasMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->hasMany(ProjectRequirement::class);
     }
 
     public function tasks(): HasMany
@@ -32,8 +39,9 @@ class Order extends Model
         return $this->hasMany(Task::class)->orderBy('sequence');
     }
 
-    public function materials(): HasMany
+    public function allTasksCompleted(): bool
     {
-        return $this->hasMany(OrderMaterial::class);
+        return $this->tasks()->count() > 0
+            && $this->tasks()->where('status', '!=', 'completed')->doesntExist();
     }
 }

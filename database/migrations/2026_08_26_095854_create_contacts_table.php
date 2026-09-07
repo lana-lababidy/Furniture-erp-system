@@ -10,6 +10,10 @@ return new class extends Migration
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')
+                ->nullable()
+                ->constrained('companies')
+                ->nullOnDelete();
             $table->string('name');
             $table->string('phone')->unique();
             $table->text('notes')->nullable();

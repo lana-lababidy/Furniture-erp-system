@@ -1,16 +1,25 @@
 <?php
-use App\Http\Controllers\HrApiController;
-use App\Http\Controllers\ContactApiController;
-use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\OrderApiController;
-use App\Http\Controllers\TaskApiController;
+use App\Http\Controllers\Api\CompanyApiController;
+use App\Http\Controllers\Api\ContactApiController;
+use App\Http\Controllers\Api\HrApiController;
+use App\Http\Controllers\Api\ProjectApiController;
+use App\Http\Controllers\Api\TaskApiController;
+use Illuminate\Support\Facades\Route;
 
-
-
+/*
+|--------------------------------------------------------------------------
+| مسارات عامة (بدون تسجيل دخول)
+|--------------------------------------------------------------------------
+*/
 Route::post('/login', [AuthController::class, 'login']);
 
-
+/*
+|--------------------------------------------------------------------------
+| مسارات محمية (auth:sanctum)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -18,33 +27,48 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |----------------------------------------------------------------------
-    | الطلبات (Orders)
-    | مسموح فقط لموظف الاستقبال ومدير المصنع 
+    | الشركات وجهات الاتصال (Companies & Contacts)
     |----------------------------------------------------------------------
     */
-    Route::middleware('role:receptionist,manager')->group(function () {
-        Route::post('/orders', [OrderApiController::class, 'store']);
-    });
+    Route::get('/companies', [CompanyApiController::class, 'index']);
+    Route::post('/companies', [CompanyApiController::class, 'store']);
+    Route::get('/companies/{id}/contacts', [CompanyApiController::class, 'contacts']);
+
     Route::get('/contacts', [ContactApiController::class, 'index']);
     Route::post('/contacts', [ContactApiController::class, 'store']);
     Route::get('/contacts/{contact}', [ContactApiController::class, 'show']);
 
-    // عرض الطلبات والتقرير - متاح لأي مستخدم مسجل دخول 
-    Route::get('/orders', [OrderApiController::class, 'index']);
-    Route::get('/orders/{order}', [OrderApiController::class, 'show']);
-    Route::get('/orders/{order}/report', [OrderApiController::class, 'report']);
+    /*
+    |----------------------------------------------------------------------
+    | المشاريع (Projects) — نظام الاستبيانات
+    | مسموح لمدير المشروع والأدمن
+    |----------------------------------------------------------------------
+    */
+    Route::middleware('role:project_manager,admin')->group(function () {
+        Route::post('/projects', [ProjectApiController::class, 'store']);
+    });
+
+    // عرض المشاريع متاح لأي مستخدم مسجل دخول
+    Route::get('/projects', [ProjectApiController::class, 'index']);
+    Route::get('/projects/{project}', [ProjectApiController::class, 'show']);
 
     /*
     |----------------------------------------------------------------------
+    | المهام (Tasks) — الفريق الميداني والمراقبة وإدخال البيانات
+    |----------------------------------------------------------------------
     */
-    Route::middleware('role:carpenter,painter,upholsterer,welder,warehouse,designer,installer')->group(function () {
+    Route::middleware('role:project_manager,field_team,qc,data_entry,admin')->group(function () {
         Route::get('/tasks', [TaskApiController::class, 'index']);
         Route::patch('/tasks/{task}/start', [TaskApiController::class, 'start']);
         Route::patch('/tasks/{task}/complete', [TaskApiController::class, 'complete']);
     });
 
-
-    Route::middleware(['auth:sanctum', 'role:hr,admin'])
+    /*
+    |----------------------------------------------------------------------
+    | الموارد البشرية (HR Module)
+    |----------------------------------------------------------------------
+    */
+    Route::middleware('role:hr,admin')
         ->prefix('hr')
         ->group(function () {
 
