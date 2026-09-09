@@ -17,21 +17,21 @@ class WorkflowSettingSeeder extends Seeder
     {
         $tasks = [
             // [task_name, allocation, days, note, related]
-            ['Samplig', 'Office', '1', null, null],
+            ['Sampling', 'Office', '1', null, null],
             ['Questionnaire design', 'Office', '2', null, null],
             ['Questionnaire Translation', 'Office', '2', null, null],
-            ['Screpting', 'Office', '2', null, null],
+            ['Scripting', 'Office', '2', null, null],
             ['Script test', 'Office & Field', '1', '3 signatures (Project manager, Field Manager, QC)', null],
             ['Assign Task and cost (Agreements)', 'Office & Field', '1', null, 'Accounting & data'],
-            // ⚠️ القيمة الأصلية بالإكسل كانت تاريخ (2026-02-03) بدل رقم - تحققي من الصحيح
+            // ⚠️ راجعي المصدر: كانت هون قيمة تاريخ (2026-02-03) بدل رقم أيام - تأكدي منها قبل الاعتماد
             ['Briefing', 'Field', '3', null, null],
             ['Pilot', 'Field', '3', null, null],
             ['Build the QC and analysis based on Dummy data', 'Office', '1', null, null],
             ['Field work', 'Field', 'Based on the sample', null, null],
             ['QC Audio', 'Office & Field', 'Based on the sample', null, null],
             ['QC GPS', 'Office & Field', 'Based on the sample', null, null],
-            ['GC Logic and analysis', 'Office & Field', 'Based on the sample', null, null],
-            ['Data cleaning & Codding', 'Office', 'Based on the sample', null, 'Accounting & data'],
+            ['QC Logic and analysis', 'Office & Field', 'Based on the sample', null, null],
+            ['Data cleaning & Coding', 'Office', 'Based on the sample', null, 'Accounting & data'],
         ];
 
         $this->insertTasks(WorkflowSetting::METHODOLOGY_QUANTITATIVE, $tasks);
@@ -80,8 +80,22 @@ class WorkflowSettingSeeder extends Seeder
                     'days' => $days,
                     'note' => $note,
                     'related' => $related,
+                    'required_role' => $this->resolveRequiredRole($taskName),
                 ]
             );
         }
+    }
+
+    /**
+     * تحديد الدور المطلوب لتنفيذ المهمة بناءً على اسمها.
+     */
+    private function resolveRequiredRole(string $taskName): ?string
+    {
+        return match (true) {
+            str_contains($taskName, 'QC') => 'qc',
+            in_array($taskName, ['Field work', 'Recruiting', 'Conducting interviews', 'Audio upload'], true) => 'field_team',
+            in_array($taskName, ['Data cleaning & Coding', 'Local Language Transcript', 'Translate Transcript to English'], true) => 'data_entry',
+            default => null,
+        };
     }
 }

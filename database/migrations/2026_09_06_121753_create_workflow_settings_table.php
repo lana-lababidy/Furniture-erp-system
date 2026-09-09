@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('workflow_settings', function (Blueprint $table) {
             $table->id();
             $table->enum('methodology', ['Quantitative', 'Qualitative']);
-            $table->string('title');
+            $table->string('task_name'); 
             $table->enum('allocation', ['Office', 'Field', 'Office & Field']);
             $table->string('days')->nullable();
             $table->text('note')->nullable();

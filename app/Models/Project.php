@@ -20,7 +20,30 @@ class Project extends Model
         'methodology',
         'status',
     ];
+    public function generateTasksFromTemplate(): void
+    {
+        // منع التوليد المتكرر - إذا المشروع عنده مهام أصلاً، لا تولّد مرة تانية
+        if ($this->tasks()->exists()) {
+            return;
+        }
 
+        $templates = WorkflowSetting::where('methodology', $this->methodology)
+            ->orderBy('sequence')
+            ->get();
+
+        foreach ($templates as $template) {
+            $this->tasks()->create([
+                'title' => $template->task_name,
+                'allocation' => $template->allocation,
+                'days' => $template->days,
+                'note' => $template->note,
+                'related' => $template->related,
+                'sequence' => $template->sequence,
+                'status' => 'pending',
+                'required_role' => $template->required_role,
+            ]);
+        }
+    }
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);

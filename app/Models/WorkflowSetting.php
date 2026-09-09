@@ -24,7 +24,7 @@ class WorkflowSetting extends Model
 
     protected $fillable = [
         'methodology',
-        'title',
+        'task_name',
         'allocation',
         'days',
         'note',
@@ -32,6 +32,7 @@ class WorkflowSetting extends Model
         'sequence',
         'required_role',
     ];
+    
 
     protected $casts = [
         'sequence' => 'integer',

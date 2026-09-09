@@ -2,37 +2,61 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Role;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
         $users = [
-            ['name' => 'مدير المشروع الأول', 'phone' => '0500000001', 'role' => 'project_manager'],
-            ['name' => 'فريق ميداني 1',      'phone' => '0500000002', 'role' => 'field_team'],
-            ['name' => 'فريق ميداني 2',      'phone' => '0500000003', 'role' => 'field_team'],
-            ['name' => 'مراقب الجودة',       'phone' => '0500000004', 'role' => 'qc'],
-            ['name' => 'مدخل بيانات',        'phone' => '0500000005', 'role' => 'data_entry'],
+            [
+                'name' => 'Admin User',
+                'phone' => '0700000001',
+                'role' => 'admin',
+            ],
+            [
+                'name' => 'Project Manager User',
+                'phone' => '0700000002',
+                'role' => 'project_manager',
+            ],
+            [
+                'name' => 'Field Team User',
+                'phone' => '0700000003',
+                'role' => 'field_team',
+            ],
+            [
+                'name' => 'QC User',
+                'phone' => '0700000004',
+                'role' => 'qc',
+            ],
+            [
+                'name' => 'Data Entry User',
+                'phone' => '0700000005',
+                'role' => 'data_entry',
+            ],
+            [
+                'name' => 'HR User',
+                'phone' => '0700000006',
+                'role' => 'hr',
+            ],
         ];
 
-        foreach ($users as $userData) {
-            $role = Role::where('name', $userData['role'])->first();
+        foreach ($users as $u) {
+            $role = Role::where('name', $u['role'])->first();
 
             if (!$role) {
-                $this->command->error("الدور '{$userData['role']}' غير موجود. شغّلي RoleSeeder أولاً.");
+                // تأكد إنو RoleSeeder اشتغل قبل هيك
                 continue;
             }
-
             User::firstOrCreate(
-                ['phone' => $userData['phone']],
+                ['phone' => $u['phone']],
                 [
-                    'name'     => $userData['name'],
-                    'password' => Hash::make('password'),
-                    'role_id'  => $role->id,
+                    'name' => $u['name'],
+                    'password' => 'password', 
+                    'role_id' => $role->id,
                 ]
             );
         }

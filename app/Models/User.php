@@ -72,4 +72,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Leave::class);
     }
+    public function reviewedLeaves(): HasMany
+    {
+        return $this->hasMany(Leave::class, 'reviewed_by');
+    }
+        public function projects()
+    {
+        return $this->hasMany(Project::class, 'assigned_pm_id');
+    }
 }

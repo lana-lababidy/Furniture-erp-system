@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use Illuminate\Database\Seeder;
+use App\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -11,11 +11,11 @@ class RoleSeeder extends Seeder
     {
         $roles = [
             'admin',
-            'hr',
             'project_manager',
             'field_team',
             'qc',
             'data_entry',
+            'hr',
         ];
 
         foreach ($roles as $role) {
